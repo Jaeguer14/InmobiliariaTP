@@ -1,4 +1,4 @@
-﻿using Inmobiliaria.Models;
+using Inmobiliaria.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,4 +13,6 @@ public class ApplicationDbContext : IdentityDbContext
 
      public DbSet<Cliente> Clientes { get; set; }
      public DbSet<Casa> Casas{ get; set; }
+     public DbSet<Inmobiliaria.Models.Alquiler> Alquiler { get; set; }
+     public DbSet<Inmobiliaria.Models.Devolucion> Devolucion { get; set; }
 }

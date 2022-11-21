@@ -1,17 +1,6 @@
 @model IEnumerable<Inmobiliaria.Models.Casa>
 
-@{
-    Layout = null;
-}
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-</head>
-<body>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -25,7 +14,7 @@
                 @Html.DisplayNameFor(model => model.Domicilio)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DueñoNombre)
+                @Html.DisplayNameFor(model => model.PropietarioNombre)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Imagen)
@@ -46,22 +35,68 @@
                 @Html.DisplayFor(modelItem => item.Domicilio)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DueñoNombre)
+                @Html.DisplayFor(modelItem => item.PropietarioNombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Imagen)
+                <img width="200" src='@Url.Action("ConvertirImagen", "Casas", new { id = item.CasaID })' />
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.EstaAlquilada)
+        @{
+            var Estado = item.EstaAlquilada ? "Alquilada" : "Disponible";
+
+        }
+        @Estado
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.CasaID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CasaID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CasaID">Delete</a>
+                @* <a asp-action="Details" asp-route-id="@item.CasaID">Details</a> | *@
+                <a  onclick="eliminarCasa(@item.CasaID);">Delete</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
-</body>
-</html>
+
+<script>
+        function eliminarCasa(id) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success boton1',
+                    cancelButton: 'btn btn-danger boton2'
+                },
+                buttonsStyling: false
+            })
+            var eliminar = swalWithBootstrapButtons.fire({
+                title: '¿Estás seguro?',
+                text: "¡No podrás revertir esto!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Si, ¡bórralo!',
+                cancelButtonText: 'No, ¡cancelalo!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    swalWithBootstrapButtons.fire(
+                        '¡eliminado!',
+                        'Su archivo ha sido eliminado.',
+                        '¡éxito!'
+                    )
+                    function redirigir(){
+                        location.href = "../../Casas/DeleteConfirmed/" + id;
+                    }
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+
+                    
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelado',
+                        'Tu archivo esta a salvo',
+                        'error'
+                    )
+                }
+                setTimeout(redirigir, 2000);
+            })
+        }
+    </script>

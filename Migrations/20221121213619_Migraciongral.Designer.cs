@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inmobiliaria.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221110222301_MigrationInicial")]
-    partial class MigrationInicial
+    [Migration("20221121213619_Migraciongral")]
+    partial class Migraciongral
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,44 @@ namespace Inmobiliaria.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("Inmobiliaria.Models.Alquiler", b =>
+                {
+                    b.Property<int>("AlquilerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AlquilerId"), 1L, 1);
+
+                    b.Property<string>("Apellido")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CasaID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClienteID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NombreCasa")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AlquilerId");
+
+                    b.HasIndex("CasaID");
+
+                    b.HasIndex("ClienteID");
+
+                    b.ToTable("Alquiler");
+                });
 
             modelBuilder.Entity("Inmobiliaria.Models.Casa", b =>
                 {
@@ -36,18 +74,23 @@ namespace Inmobiliaria.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DueñoNombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("EstaAlquilada")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Imagen")
+                    b.Property<byte[]>("Imagen")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ImagenContentType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Nombre")
+                    b.Property<string>("PropietarioNombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -82,6 +125,44 @@ namespace Inmobiliaria.Migrations
                     b.HasKey("ClienteID");
 
                     b.ToTable("Clientes");
+                });
+
+            modelBuilder.Entity("Inmobiliaria.Models.Devolucion", b =>
+                {
+                    b.Property<int>("DevolucionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DevolucionId"), 1L, 1);
+
+                    b.Property<string>("Apellido")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CasaID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClienteID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DevolucionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NombreCasa")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("DevolucionId");
+
+                    b.HasIndex("CasaID");
+
+                    b.HasIndex("ClienteID");
+
+                    b.ToTable("Devolucion");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -284,6 +365,44 @@ namespace Inmobiliaria.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Inmobiliaria.Models.Alquiler", b =>
+                {
+                    b.HasOne("Inmobiliaria.Models.Casa", "Casa")
+                        .WithMany()
+                        .HasForeignKey("CasaID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Inmobiliaria.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Casa");
+
+                    b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("Inmobiliaria.Models.Devolucion", b =>
+                {
+                    b.HasOne("Inmobiliaria.Models.Casa", "Casa")
+                        .WithMany()
+                        .HasForeignKey("CasaID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Inmobiliaria.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Casa");
+
+                    b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

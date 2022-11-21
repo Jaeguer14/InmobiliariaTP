@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "g/dq5MDpT3EJeT/Yv6GMM9EtIwvxQnRZC9LramfV1SQ=",
+  "Hash": "fPE/SQNC2hjh+AxrfrgvUFvjryTThYZ0uLjWCOsZxYk=",
   "Source": "Inmobiliaria",
   "BasePath": "_content/Inmobiliaria",
   "Mode": "Default",
@@ -1120,6 +1120,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\site.js"
+    },
+    {
+      "Identity": "C:\\Users\\julian\\Documents\\Inmobiliaria\\wwwroot\\js\\sweetalert2.all.min.js",
+      "SourceId": "Inmobiliaria",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\julian\\Documents\\Inmobiliaria\\wwwroot\\",
+      "BasePath": "_content/Inmobiliaria",
+      "RelativePath": "js/sweetalert2.all.min.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\sweetalert2.all.min.js"
     },
     {
       "Identity": "C:\\Users\\julian\\Documents\\Inmobiliaria\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",

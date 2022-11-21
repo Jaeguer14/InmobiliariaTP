@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Inmobiliaria.Migrations
 {
-    public partial class MigrationInicial : Migration
+    public partial class Migraciongral : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -56,9 +56,11 @@ namespace Inmobiliaria.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Domicilio = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DueñoNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Imagen = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EstaAlquilada = table.Column<bool>(type: "bit", nullable: false)
+                    PropietarioNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Imagen = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    ImagenContentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EstaAlquilada = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -187,6 +189,76 @@ namespace Inmobiliaria.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Alquiler",
+                columns: table => new
+                {
+                    AlquilerId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ClienteID = table.Column<int>(type: "int", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Apellido = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CasaID = table.Column<int>(type: "int", nullable: false),
+                    NombreCasa = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Alquiler", x => x.AlquilerId);
+                    table.ForeignKey(
+                        name: "FK_Alquiler_Casas_CasaID",
+                        column: x => x.CasaID,
+                        principalTable: "Casas",
+                        principalColumn: "CasaID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Alquiler_Clientes_ClienteID",
+                        column: x => x.ClienteID,
+                        principalTable: "Clientes",
+                        principalColumn: "ClienteID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Devolucion",
+                columns: table => new
+                {
+                    DevolucionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DevolucionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ClienteID = table.Column<int>(type: "int", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Apellido = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CasaID = table.Column<int>(type: "int", nullable: false),
+                    NombreCasa = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Devolucion", x => x.DevolucionId);
+                    table.ForeignKey(
+                        name: "FK_Devolucion_Casas_CasaID",
+                        column: x => x.CasaID,
+                        principalTable: "Casas",
+                        principalColumn: "CasaID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Devolucion_Clientes_ClienteID",
+                        column: x => x.ClienteID,
+                        principalTable: "Clientes",
+                        principalColumn: "ClienteID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Alquiler_CasaID",
+                table: "Alquiler",
+                column: "CasaID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Alquiler_ClienteID",
+                table: "Alquiler",
+                column: "ClienteID");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -225,10 +297,23 @@ namespace Inmobiliaria.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Devolucion_CasaID",
+                table: "Devolucion",
+                column: "CasaID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Devolucion_ClienteID",
+                table: "Devolucion",
+                column: "ClienteID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Alquiler");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -245,16 +330,19 @@ namespace Inmobiliaria.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Casas");
-
-            migrationBuilder.DropTable(
-                name: "Clientes");
+                name: "Devolucion");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Casas");
+
+            migrationBuilder.DropTable(
+                name: "Clientes");
         }
     }
 }
