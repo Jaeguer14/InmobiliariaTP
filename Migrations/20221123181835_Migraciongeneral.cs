@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Inmobiliaria.Migrations
 {
-    public partial class Migraciongral : Migration
+    public partial class Migraciongeneral : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,7 +54,7 @@ namespace Inmobiliaria.Migrations
                 {
                     CasaID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CasaNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Domicilio = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PropietarioNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Imagen = table.Column<byte[]>(type: "varbinary(max)", nullable: true),

@@ -2,13 +2,13 @@
 
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn botonc">Crear Nuevo</a>
 </p>
-<table class="table">
+<table class="table fondotabla">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nombre)
+                @Html.DisplayNameFor(model => model.CasaNombre)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Domicilio)
@@ -29,7 +29,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
+                @Html.DisplayFor(modelItem => item.CasaNombre)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Domicilio)
@@ -38,8 +38,20 @@
                 @Html.DisplayFor(modelItem => item.PropietarioNombre)
             </td>
             <td>
-                <img width="200" src='@Url.Action("ConvertirImagen", "Casas", new { id = item.CasaID })' />
-            </td>
+                        @{
+                            var base64 = Convert.ToBase64String(item.Imagen);
+                            var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                        }
+
+                        <img width="200" src="@imgSrc" />
+                    </td>
+            @* <td>
+                @{
+                    var base64 = Convert.ToBase64String(item.Imagen);
+                    var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                 }
+                            <img src="@imgSrc"/>
+            </td> *@
             <td>
         @{
             var Estado = item.EstaAlquilada ? "Alquilada" : "Disponible";
@@ -48,9 +60,9 @@
         @Estado
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.CasaID">Edit</a> |
-                @* <a asp-action="Details" asp-route-id="@item.CasaID">Details</a> | *@
-                <a  onclick="eliminarCasa(@item.CasaID);">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.CasaID" class="btn botone">Edit</a> 
+                @* <a asp-action="Details" asp-route-id="@item.CasaID">Details</a>  *@
+                <a  onclick="eliminarCasa(@item.CasaID);"class="btn botonca">Delete</a>
             </td>
         </tr>
 }

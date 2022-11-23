@@ -7,9 +7,9 @@
 
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn botonc" >Crear Nuevo</a>
 </p>
-<table class="table">
+<table class="table fondotabla">
     <thead>
         <tr>
             <th>
@@ -18,17 +18,17 @@
             <th>
                 @Html.DisplayNameFor(model => model.Nombre)
             </th>
-            <th>
+              <th>
                 @Html.DisplayNameFor(model => model.Apellido)
-            </th>
+            </th>   
             <th>
-                @Html.DisplayNameFor(model => model.Cliente)
+                @Html.DisplayNameFor(model => model.ClienteID)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.NombreCasa)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Casa)
+                @Html.DisplayNameFor(model => model.CasaID)
             </th>
             <th></th>
         </tr>
@@ -42,22 +42,22 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Nombre)
             </td>
-            <td>
+               <td>
                 @Html.DisplayFor(modelItem => item.Apellido)
-            </td>
+            </td>   
             <td>
-                @Html.DisplayFor(modelItem => item.Cliente.ClienteID)
+                @Html.DisplayFor(modelItem => item.ClienteID)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.NombreCasa)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Casa.CasaID)
+                @Html.DisplayFor(modelItem => item.CasaID)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.AlquilerId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.AlquilerId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.AlquilerId">Delete</a>
+                @* <a asp-action="Edit" asp-route-id="@item.AlquilerId">Edit</a> | *@
+                <a asp-action="Details" asp-route-id="@item.AlquilerId" class="btn botond" >Detalles</a> |
+                @* <a asp-action="Delete" asp-route-id="@item.AlquilerId">Delete</a> *@
             </td>
         </tr>
 }

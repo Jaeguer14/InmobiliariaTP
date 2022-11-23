@@ -25,14 +25,17 @@ namespace Inmobiliaria.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Casas.ToListAsync());
+            return _context.Casas != null ?
+            View(await _context.Casas.ToListAsync()) :
+            Problem("Entity set 'InmobiliariaContext.Casas'  is null.");
+            // return View(await _context.Casas.ToListAsync());
         }
 
 
 
 
         // GET: Casas/Create
-
+        [Authorize]
 
         public IActionResult Create()
         {
@@ -42,21 +45,24 @@ namespace Inmobiliaria.Controllers
         // POST: Casas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CasaID,Nombre,Domicilio,PropietarioNombre,ImagenFile")] Casa casa)
+        public async Task<IActionResult> Create([Bind("CasaID,CasaNombre,Domicilio,PropietarioNombre")] Casa casa, IFormFile Imagen)
         {
             if (ModelState.IsValid)
             {
-                using (var ms = new MemoryStream())
+               if (Imagen != null && Imagen.Length > 0)
                 {
-                    if (casa.ImagenFile != null)
+                    byte[] ImagenCasa = null;
+                    using (var fs1 = Imagen.OpenReadStream())
+                    using (var ms1 = new MemoryStream())
+
                     {
-                        casa.ImagenFile.CopyTo(ms);
-                        var fileBytes = ms.ToArray();
-                        casa.Imagen = fileBytes;
-                        casa.ImagenContentType = casa.ImagenFile.ContentType;
+                        fs1.CopyTo(ms1);
+                        ImagenCasa = ms1.ToArray();
                     }
+                    casa.Imagen = ImagenCasa;
 
                 }
                 _context.Add(casa);
@@ -67,6 +73,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: Casas/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Casas == null)
@@ -85,9 +92,10 @@ namespace Inmobiliaria.Controllers
         // POST: Casas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CasaID,Nombre,Domicilio,PropietarioNombre,ImagenFile")] Casa casa)
+        public async Task<IActionResult> Edit(int id, [Bind("CasaID,Nombre,Domicilio,PropietarioNombre")] Casa casa, IFormFile Imagen)
         {
             if (id != casa.CasaID)
             {
@@ -98,17 +106,19 @@ namespace Inmobiliaria.Controllers
             {
                 try
                 {
-                    using (var ms = new MemoryStream())
-                    {
-                        if (casa.ImagenFile != null)
-                        {
-                            casa.ImagenFile.CopyTo(ms);
-                            var fileBytes = ms.ToArray();
-                            casa.Imagen = fileBytes;
-                            casa.ImagenContentType = casa.ImagenFile.ContentType;
-                        }
+                    if (Imagen != null && Imagen.Length > 0)
+                {
+                    byte[] ImagenCasa = null;
+                    using (var fs1 = Imagen.OpenReadStream())
+                    using (var ms1 = new MemoryStream())
 
+                    {
+                        fs1.CopyTo(ms1);
+                        ImagenCasa = ms1.ToArray();
                     }
+                    casa.Imagen = ImagenCasa;
+
+                }
                     _context.Update(casa);
                     await _context.SaveChangesAsync();
                 }
@@ -129,6 +139,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: Casas/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Casas == null)
@@ -149,19 +160,31 @@ namespace Inmobiliaria.Controllers
         //  POST: Casas/Delete/5
         //  [HttpPost, ActionName("Delete")]
         //  [ValidateAntiForgeryToken]
+        [Authorize]
          public async Task<IActionResult> DeleteConfirmed(int id)
          {
-             if (_context.Casas == null)
-             {
-                return Problem("Entity set 'ApplicationDbContext.Casas'  is null.");
-             }
-             var casa = await _context.Casas.FindAsync(id);
+            var casa = await _context.Casas.FindAsync(id);
+            if (casa.EstaAlquilada == true)
+            {
+                return RedirectToAction(nameof(Index));
+            }
             if (casa != null)
-             {
-                 _context.Casas.Remove(casa);
-             }
+            {
+                var houseAlquilada = (from a in _context.Alquiler where a.CasaID == id select a).Count();
+                if (houseAlquilada == 0)  
+                {
+                    _context.Casas.Remove(casa);
+                    await _context.SaveChangesAsync();
+                } 
+                else
+                {
+                    casa.IsDeleted = true; 
+                    casa.CasaNombre = "ELIMINADA";
+                    _context.Update(casa);
+                    await _context.SaveChangesAsync();
+                }             
 
-             await _context.SaveChangesAsync();
+            }
              return RedirectToAction(nameof(Index));
          }
 

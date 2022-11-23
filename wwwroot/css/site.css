@@ -14,5 +14,138 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+background-image: url("https://s3.amazonaws.com/arc-wordpress-client-uploads/infobae-wp/wp-content/uploads/2019/07/08152134/Mudanza-7.jpg");
+background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat
+
+
+  /* margin-bottom: 60px; */
 }
+
+/* BOTONES */
+
+.botonc {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 0.5em 1.2em;
+  background: #318aac;
+  border: 2px solid; 
+  border-radius: 12px;
+  border-color: #0f3240;
+  position: relative;
+  text-decoration: none;
+}
+.botonc:hover {
+  color: rgba(255, 255, 255, 1) !important;
+  box-shadow: 0 4px 16px rgba(49, 138, 172, 1);
+  transition: all 0.2s ease;
+
+}
+
+.botond {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 0.5em 1.2em;
+  background: #00e861;
+  border: 2px solid; 
+  border-radius: 12px;
+  border-color: #003c1b;
+  position: relative;
+  text-decoration: none;
+}
+.botond:hover {
+  color: rgba(255, 255, 255, 1) !important;
+  box-shadow: 0 4px 16px #00e861;
+  transition: all 0.2s ease;
+
+}
+
+
+.botone {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 0.5em 1.2em;
+  background: #78909C;
+  border: 2px solid; 
+  border-radius: 12px;
+  border-color: #455A64 ;
+  position: relative;
+  text-decoration: none;
+}
+.botone:hover {
+  color: rgba(255, 255, 255, 1) !important;
+  box-shadow: 0 4px 16px rgb(240, 251, 255);
+  transition: all 0.2s ease;
+
+}
+
+
+.botonv {
+  color: rgba(4, 4, 4, 0.9) !important;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 0.5em 1.2em;
+  background:#F5F5F5;
+  border: 2px solid; 
+  border-radius: 12px;
+  border-color:rgba(49, 138, 172, 1)  ;
+  position: relative;
+  text-decoration: none;
+}
+.botonv:hover {
+  color: rgb(5, 4, 4) !important;
+  box-shadow: 0 4px 16px rgb(240, 251, 255);
+  transition: all 0.2s ease;
+
+}
+
+.botong {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 0.5em 1.2em;
+  background:#388E3C ;
+  border: 2px solid; 
+  border-radius: 12px;
+  border-color:#1B5E20 ;
+  position: relative;
+  text-decoration: none;
+}
+.botong:hover {
+  color: rgb(255, 255, 255) !important;
+  box-shadow: 0 4px 16px rgb(240, 251, 255);
+  transition: all 0.2s ease;
+
+}
+
+.botonca {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 0.5em 1.2em;
+  background:#B71C1C;
+  border: 2px solid; 
+  border-radius: 12px;
+  border-color:#B71C1C ;
+  position: relative;
+  text-decoration: none;
+}
+.botonca:hover {
+  color: rgba(255, 255, 255, 1) !important;
+  box-shadow: 0 4px 16px rgb(240, 251, 255);
+  transition: all 0.2s ease;
+
+}
+
+.fondotabla{
+  background: linear-gradient(rgba(154, 156, 161, 0.75), rgba(135, 136, 139, 0.5));
+ }
+
+ h1{
+  color: white;
+  font-size: 100px;
+ }

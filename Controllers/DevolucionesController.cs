@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Inmobiliaria.Data;
 using Inmobiliaria.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria.Controllers
 {
+    [Authorize]
     public class DevolucionesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -49,8 +51,8 @@ namespace Inmobiliaria.Controllers
         // GET: Devoluciones/Create
         public IActionResult Create()
         {
-            ViewData["CasaID"] = new SelectList(_context.Casas, "CasaID", "CasaID");
-            ViewData["ClienteID"] = new SelectList(_context.Clientes, "ClienteID", "ClienteID");
+          ViewData["CasaID"] = new SelectList(_context.Casas.Where(x => x.EstaAlquilada == true && x.IsDeleted == false), "CasaID", "CasaNombre");
+            ViewData["ClienteID"] = new SelectList(_context.Clientes, "ClienteID", "Nombre");
             return View();
         }
 
@@ -59,18 +61,57 @@ namespace Inmobiliaria.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DevolucionId,DevolucionDate,ClienteID,Nombre,Apellido,CasaID,NombreCasa")] Devolucion devolucion)
+
+        public async Task<IActionResult> Create([Bind("DevolucionID,DevolucionDate,ClienteID,CasaID,Nombre,Apellido,NombreCasa")] Devolucion @devolucion)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(devolucion);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    // var restringClient = (from a in _context.Rental where a.ClientID == @return.ClientID select a).OrderByDescending(a => a.RentalID);
+                    // var restringClientOrdenado = restringClient.FirstOrDefault();
+                    var ClienteID = (from a in _context.Alquiler where a.ClienteID == @devolucion.ClienteID && a.CasaID == @devolucion.CasaID select a).SingleOrDefault();
+                    if(ClienteID  != null)
+                    {
+                        // if(restringClientOrdenado.HouseID == @return.HouseID)
+                        if (ClienteID.Date < @devolucion.DevolucionDate)
+                        {
+                            var Casa = (from a in _context.Casas where a.CasaID == @devolucion.CasaID select a).SingleOrDefault();
+                            var Cliente = (from a in _context.Clientes where a.ClienteID == @devolucion.ClienteID select a).SingleOrDefault();
+                            @devolucion.NombreCasa = Casa.CasaNombre;
+                            @devolucion.Nombre = Cliente.Nombre ;
+                            @devolucion.ClienteID = Cliente.ClienteID;
+                            @devolucion.CasaID = Casa.CasaID;
+                            Casa.EstaAlquilada = false;
+                            _context.Add(@devolucion);
+                            await _context.SaveChangesAsync();
+                            return RedirectToAction(nameof(Index));
+                        }
+                        
+                    }
+                }
+                catch (System.Exception ex){
+                    var error = ex;
+                }
             }
-            ViewData["CasaID"] = new SelectList(_context.Casas, "CasaID", "CasaID", devolucion.CasaID);
-            ViewData["ClienteID"] = new SelectList(_context.Clientes, "ClienteID", "ClienteID", devolucion.ClienteID);
-            return View(devolucion);
+            ViewData["CasaID"] = new SelectList(_context.Casas.Where(x => x.EstaAlquilada == true && x.IsDeleted == false), "CasaID", "CasaNombre");
+            ViewData["AlquilerId"] = new SelectList(_context.Alquiler, "AlquilerID", "CasaID", "ClienteID");
+            ViewData["ClienteID"] = new SelectList(_context.Clientes, "ClienteID","Nombre");
+            return View(@devolucion);
+
         }
+        // public async Task<IActionResult> Create([Bind("DevolucionId,DevolucionDate,ClienteID,Nombre,Apellido,CasaID,NombreCasa")] Devolucion devolucion)
+        // {
+        //     if (ModelState.IsValid)
+        //     {
+        //         _context.Add(devolucion);
+        //         await _context.SaveChangesAsync();
+        //         return RedirectToAction(nameof(Index));
+        //     }
+        //     ViewData["CasaID"] = new SelectList(_context.Casas, "CasaID", "CasaID", devolucion.CasaID);
+        //     ViewData["ClienteID"] = new SelectList(_context.Clientes, "ClienteID", "ClienteID", devolucion.ClienteID);
+        //     return View(devolucion);
+        // }
 
         // GET: Devoluciones/Edit/5
         public async Task<IActionResult> Edit(int? id)

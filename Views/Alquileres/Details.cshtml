@@ -9,7 +9,7 @@
 <div>
     <h4>Alquiler</h4>
     <hr />
-    <dl class="row">
+    <dl class="row fondotabla">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Date)
         </dt>
@@ -49,6 +49,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.AlquilerId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.AlquilerId" class="btn botone">Editar</a> |
+    <a asp-action="Index" class="btn botonv">Volver</a>
 </div>

@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Inmobiliaria.Data;
 using Inmobiliaria.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria.Controllers
 {
+    [Authorize]
     public class ClientesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -135,22 +137,28 @@ namespace Inmobiliaria.Controllers
         }
 
         // POST: Clientes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        // [HttpPost, ActionName("Delete")]
+        // [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Clientes == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Clientes'  is null.");
-            }
-            var cliente = await _context.Clientes.FindAsync(id);
+           var cliente = await _context.Clientes.FindAsync(id);
+            
             if (cliente != null)
             {
-                _context.Clientes.Remove(cliente);
+                var clienteAlquiler = (from a in _context.Alquiler where a.ClienteID == id select a).ToList();
+                if (clienteAlquiler.Count == 0)
+                {
+                    _context.Clientes.Remove(cliente);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    
+                }
+
             }
-            
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+
         }
 
         private bool ClienteExists(int id)

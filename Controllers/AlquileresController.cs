@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Inmobiliaria.Data;
 using Inmobiliaria.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria.Controllers
 {
+    [Authorize]
     public class AlquileresController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,8 +24,8 @@ namespace Inmobiliaria.Controllers
         // GET: Alquileres
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Alquiler.Include(a => a.Casa).Include(a => a.Cliente);
-            return View(await applicationDbContext.ToListAsync());
+            var InmobiliariaContext= _context.Alquiler.Include(a => a.Casa).Include(a => a.Cliente);
+            return View(await InmobiliariaContext.ToListAsync());
         }
 
         // GET: Alquileres/Details/5
@@ -49,9 +51,9 @@ namespace Inmobiliaria.Controllers
         // GET: Alquileres/Create
         public IActionResult Create()
         {
-            ViewData["CasaID"] = new SelectList(_context.Casas, "CasaID", "CasaID");
-            ViewData["ClienteID"] = new SelectList(_context.Clientes, "ClienteID", "ClienteID");
-            return View();
+           ViewData["ClienteID"] = new SelectList(_context.Clientes, "ClienteID", "Nombre", "Apellido");
+           ViewData["CasaID"] = new SelectList(_context.Casas.Where(x => x.EstaAlquilada == false && x.IsDeleted == false), "CasaID", "CasaNombre");
+             return View();
         }
 
         // POST: Alquileres/Create
@@ -63,12 +65,21 @@ namespace Inmobiliaria.Controllers
         {
             if (ModelState.IsValid)
             {
+                var Casa = (from a in _context.Casas where a.CasaID == alquiler.CasaID select a).SingleOrDefault();
+                var Cliente = (from a in _context.Clientes where a.ClienteID == alquiler.ClienteID select a).SingleOrDefault();
+                alquiler.NombreCasa = Casa.CasaNombre;
+                alquiler.Nombre = Cliente.Nombre + " " + Cliente.Apellido;
+                alquiler.ClienteID = Cliente.ClienteID;
+                alquiler.CasaID = Casa.CasaID;
+                Casa.EstaAlquilada = true;
+            
+
                 _context.Add(alquiler);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["CasaID"] = new SelectList(_context.Casas, "CasaID", "CasaID", alquiler.CasaID);
-            ViewData["ClienteID"] = new SelectList(_context.Clientes, "ClienteID", "ClienteID", alquiler.ClienteID);
+            } 
+            ViewData["ClienteID"] = new SelectList(_context.Clientes, "ClienteID", "Nombre", alquiler.ClienteID);
+            ViewData["CasaID"] = new SelectList(_context.Casas.Where(x => x.EstaAlquilada == false && x.IsDeleted == false), "CasaID", "CasaNombre");
             return View(alquiler);
         }
 
@@ -95,7 +106,7 @@ namespace Inmobiliaria.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AlquilerId,Date,ClienteID,Nombre,Apellido,CasaID,NombreCasa")] Alquiler alquiler)
+        public async Task<IActionResult> Edit(int id, [Bind("AlquilerId,Date,ClienteID,Nombre,Apellido,CasaID,CasaNombre")] Alquiler alquiler)
         {
             if (id != alquiler.AlquilerId)
             {
@@ -154,21 +165,21 @@ namespace Inmobiliaria.Controllers
         {
             if (_context.Alquiler == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Alquiler'  is null.");
+                return Problem("Entity set 'InmobiliariaContext.Alquiler'  is null.");
             }
             var alquiler = await _context.Alquiler.FindAsync(id);
             if (alquiler != null)
             {
                 _context.Alquiler.Remove(alquiler);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool AlquilerExists(int id)
         {
-          return _context.Alquiler.Any(e => e.AlquilerId == id);
+            return _context.Alquiler.Any(e => e.AlquilerId == id);
         }
     }
 }

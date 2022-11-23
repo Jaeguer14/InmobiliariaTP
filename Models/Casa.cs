@@ -8,7 +8,7 @@ public class Casa
 {
     [Key]
     public int CasaID { get; set; }
-    public string Nombre { get; set; } = null!;
+    public string CasaNombre { get; set; } = null!;
     public string Domicilio { get; set; } = null!;
 
     [Display(Name = "Propietario")]
@@ -21,8 +21,8 @@ public class Casa
 
     public bool IsDeleted { get; set; }
 
-   [NotMapped]
-    public IFormFile? ImagenFile { get; set; } 
+//    [NotMapped]
+    // public IFormFile? ImagenFile { get; set; } 
 
 
 
